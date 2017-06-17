@@ -1,1 +1,38 @@
-<%= User.get(user_id).email %>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Home</title>
+</head>
+<body>
+hello <%= User.get(user_id).email %>
+<p>So What going on!!</p>
+<form action="/tweet" method="POST">
+<input type="text" name="text">
+<input type="submit" value="Post">
+</form>
+<% tweets=Tweet.all(:order=>[:id.desc])%>
+<% count=Tweet.count%>
+<% n=0%>
+<% while n<count do %>
+<%tweet=tweets[n]%>
+<%= tweet.email%>
+<%= tweet.text%>
+<p>likes <%=tweet.like%> </p>
+<form action="/like" method="POST">
+<input type="hidden" name="like" value=<%= tweet.id.to_s %> >
+<input type="submit" value="like">
+</form>
+<p>unlike <%=tweet.unlike%></p>
+<form action="/unlike" method="POST">
+<input type="hidden" name="unlike" value=<%=tweet.id.to_s%> >
+<input type="submit" value="unlike">
+</form>
+<form action="/comment" method="POST">
+<input type="hidden" name="comment" value=<%=tweet.id.to_s%> >
+<input type="submit" value="comment">
+</form>
+<% n=n+1%>
+<%end%>
+</body>
+</html>
+

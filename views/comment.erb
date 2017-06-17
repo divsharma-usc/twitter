@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>comment</title>
+</head>
+<body>
+<%= Tweet.get(tweet_id.to_i).text%>
+<p>Write Your Comment</p>
+<form action='/postcomment' method="POST">
+	<input type="text" name="comment">
+	<input type="hidden" name="comment_id" value=<%= tweet_id.to_s%>>
+	<input type="submit" name="post">
+</form>
+<% comments=Comment.all(:order=>[:id.desc])%>
+<% count=comments.count%>
+<% n=0%>
+<% while n<count do %>
+<%comment=comments[n]%>
+<% if comment.commentweet==tweet_id.to_i%>
+<%= comment.commentor%>
+<%= comment.text%>
+<%end%>
+<br>
+<% n=n+1%>
+<%end%>
+
+</body>
+</html>
