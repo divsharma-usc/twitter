@@ -6,6 +6,7 @@ class User
 	property :id, Serial
 	property :email, String
 	property :password, String
+	property :user,String
 end
 class Tweet
 	include DataMapper::Resource
@@ -61,12 +62,14 @@ end
 post '/signup' do
 	email=params["email"]
 	password=params["password"]
+    user2=params["user"]
 	user=User.all(email: email).first
 	if user
 		return redirect '/signup'
 	else
 		user=User.new
 		user.email=email
+		user.user=user2
 		user.password=password
 		user.save
 		session[:user_id]=user.id
@@ -74,7 +77,7 @@ post '/signup' do
 	end
 end
 post '/tweet' do
-    email=User.get(session[:user_id]).email
+    email=User.get(session[:user_id]).user
     tweet=Tweet.new
     tweet.email=email
     tweet.text=params["text"]
@@ -110,7 +113,7 @@ end
 post '/postcomment' do
 	puts "helloworld"
      text=params["comment"]
-     commentor=User.get(session[:user_id]).email
+     commentor=User.get(session[:user_id]).user
      commentweet=params["comment_id"].to_i
      comment=Comment.new
      comment.commentor=commentor

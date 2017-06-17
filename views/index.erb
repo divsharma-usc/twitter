@@ -2,37 +2,118 @@
 <html>
 <head>
   <title>Home</title>
+  <title>signin</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+   <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+   <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 </head>
 <body>
-hello <%= User.get(user_id).email %>
-<p>So What going on!!</p>
-<form action="/tweet" method="POST">
-<input type="text" name="text">
-<input type="submit" value="Post">
+<div class="mdl-layout mdl-js-layout">
+  <header class="mdl-layout__header mdl-layout__header--scroll">
+    <div class="mdl-layout__header-row">
+      <span class="mdl-layout-title" style="size:30px;">Chirp Out</span>
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation">
+        <a class="mdl-navigation__link" href="/signout">LogOut</a>
+         </nav>
+    </div>
+  </header>
+ </div>
+ <div class="mdl-grid center-items">
+
+ <div class="demo-card-wide mdl-card mdl-shadow--2dp " style="width: 700px;">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Welcome <%= User.get(user_id).user %></h2>
+  </div>
+  <div class="mdl-card__supporting-text">
+      So whats in your mind<br>
+      Chirp it Out
+  </div>
+ <form action="/tweet" method="POST">
+<div class="mdl-textfield mdl-js-textfield" style="width: 680px; justify-content: center;">
+    <input class="mdl-textfield__input" type="text" id="text" name="text">
+    <label class="mdl-textfield__label" for="text" >Write Here</label>
+  </div>
+  <br>
+<input class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" type="submit" value="Post">
 </form>
+   </div>
+  </div>
 <% tweets=Tweet.all(:order=>[:id.desc])%>
 <% count=Tweet.count%>
 <% n=0%>
 <% while n<count do %>
 <%tweet=tweets[n]%>
-<%= tweet.email%>
-<%= tweet.text%>
-<p>likes <%=tweet.like%> </p>
-<form action="/like" method="POST">
-<input type="hidden" name="like" value=<%= tweet.id.to_s %> >
-<input type="submit" value="like">
-</form>
-<p>unlike <%=tweet.unlike%></p>
-<form action="/unlike" method="POST">
-<input type="hidden" name="unlike" value=<%=tweet.id.to_s%> >
-<input type="submit" value="unlike">
-</form>
-<form action="/comment" method="POST">
-<input type="hidden" name="comment" value=<%=tweet.id.to_s%> >
-<input type="submit" value="comment">
-</form>
+<div class="mdl-grid center-items">
+<div class="demo-card-square mdl-card mdl-shadow--2dp">
+  <div class="mdl-card__title mdl-card--expand">
+    <h2 class="mdl-card__title-text"><%= tweet.email%></h2>
+  </div>
+  <div class="mdl-card__supporting-text">
+    <%= tweet.text%>
+  </div>
+  <div class="mdl-card__actions mdl-card--border ">
+    <form action="/like" method="POST" id=<%='l'+n.to_s%>>
+    <input type="hidden" name="like" value=<%= tweet.id.to_s %> >
+    </form>
+    <form action="/unlike" method="POST" id=<%='u'+n.to_s%>>
+    <input type="hidden" name="unlike" value=<%= tweet.id.to_s %> >
+    </form>
+    <form action="/comment" method="POST" id=<%='c'+n.to_s%>>
+    <input type="hidden" name="comment" value=<%=tweet.id.to_s%> >
+    </form>
+    <div class="all">
+    <button form=<%='l'+n.to_s%> type="submit" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+    <i class="material-icons">thumb_up</i>
+    </button>
+    <%=tweet.like%>
+    <button form=<%='u'+n.to_s%> type="submit" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+    <i class="material-icons">thumb_down</i>
+    </button>
+    <%=tweet.unlike%>
+    <button  form=<%='c'+n.to_s%> type="submit" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+    <i class="material-icons">comment</i>
+   </button>
+   </div>
+  </div>
+  </div>
+</div>
+</div>
+
+
 <% n=n+1%>
 <%end%>
 </body>
 </html>
+<style>
+.demo-card-wide{
+  width: 700px;
+}
+.demo-card-square.mdl-card {
+  width: 700px;
+  height: 260px;
+}
+.demo-card-square > .mdl-card__title {
+  color: #fff;
+  background:
+  bottom right 15% no-repeat #46B6AC;
+}
+.mdl-grid.center-items {
+  justify-content: center;
+}
+.all{
+	display:inline-block;
+}
+.demo-card-wide.mdl-card {
+  width: 512px;
+}
+.demo-card-wide > .mdl-card__title {
+  color: #fff;
+  height: 176px;
+  background-color: #FB8C00;
+}
+.demo-card-wide > .mdl-card__menu {
+  color: #fff;
+}
+</style>
 
