@@ -24,6 +24,18 @@ class Comment
     property :commentweet, Integer
     property :commentor, String
 end
+class Likes
+	include DataMapper::Resource
+	property :id, Serial
+	property :tweetid, Integer
+	property :userid, Integer
+end
+class Unlikes
+	include DataMapper::Resource
+	property :id, Serial
+	property :tweetid, Integer
+	property :userid, Integer
+end
 DataMapper.finalize
 DataMapper.auto_upgrade!
 enable :sessions
@@ -89,17 +101,55 @@ post '/tweet' do
 end
 post '/like' do
 t=params["like"].to_i
+tweetfind={
+	:userid => session[:user_id],
+	:tweetid => t
+}
+if !Unlikes.all(tweetfind).first
+if !Likes.all(tweetfind).first
 tweet=Tweet.get(t)
 tweet.like=tweet.like+1
 tweet.save
+like=Likes.new
+like.userid=session[:user_id]
+like.tweetid=params["tweet"].to_i
+like.tweetid=t
+like.save
+else
+tweet=Tweet.get(t)
+tweet.like=tweet.like-1
+tweet.save
+like=Likes.all(tweetfind).first
+like.destroy
+end
+end
 return redirect '/'
 
 end
 post '/unlike' do
 	 t=params["unlike"].to_i
-     tweet=Tweet.get(t)
-     tweet.unlike=tweet.unlike+1
-     tweet.save
+     tweetfind={
+	:userid => session[:user_id],
+	:tweetid => t
+     }
+if !Likes.all(tweetfind).first
+if !Unlikes.all(tweetfind).first
+tweet=Tweet.get(t)
+tweet.unlike=tweet.unlike+1
+tweet.save
+unlike=Unlikes.new
+unlike.userid=session[:user_id]
+unlike.tweetid=params["tweet"].to_i
+unlike.tweetid=t
+unlike.save
+else
+tweet=Tweet.get(t)
+tweet.unlike=tweet.unlike-1
+tweet.save
+unlike=Unlikes.all(tweetfind).first
+unlike.destroy
+end
+end
 	return redirect '/'
 end
 id=0
